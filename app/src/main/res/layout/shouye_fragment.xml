@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragement.shouye"
+    android:background="@color/chose">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="欢迎到广场！"
+        android:gravity="center"
+        android:textSize="30dp"
+        android:layout_centerHorizontal="true"
+        />
+
+</FrameLayout>
