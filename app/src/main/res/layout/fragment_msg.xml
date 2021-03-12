@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragement.MyinfoFragment">
+    android:background="@color/cardview_light_background"
+    tools:context=".fragement.msgFragment">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="27dp"
+        android:layout_height="47dp"
         android:layout_marginTop="260dp"
-        android:gravity="center"
-        android:text="我的资料" />
+        android:text="youxiangxinxi" />
 
 </FrameLayout>

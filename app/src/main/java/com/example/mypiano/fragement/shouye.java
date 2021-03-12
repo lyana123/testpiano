@@ -25,7 +25,7 @@ public class shouye extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.shouye_fragment, container, false);
+        return inflater.inflate(R.layout.fragment_shouye, container, false);
     }
 
     @Override

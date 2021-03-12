@@ -11,8 +11,32 @@
     <string name="brush">我是一个粉刷匠\n5353531 24325 5353531 24321 2244315 24325 5353531 24321</string>
     <string name="schooling">上学歌\n12315 66+165 66+1563 653531231</string>
     <string name="author">华南师范大学软件学院</string>
-
+    <integer-array name="SelectedStrPic">
+        <item>@drawable/shouye1</item>
+        <item>@drawable/ziyuan1</item>
+        <item>@drawable/tianjia1</item>
+        <item>@drawable/xinxi1</item>
+        <item>@drawable/geren1</item>
+    </integer-array>
+    <integer-array name="UnselectedStrPic">
+        <item>@drawable/shouye2</item>
+        <item>@drawable/ziyuan2</item>
+        <item>@drawable/tianjia2</item>
+        <item>@drawable/xinxi2</item>
+        <item>@drawable/geren2</item>
+    </integer-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_phone">请输入您的电话号码</string>
+    <string name="prompt_password">请输入您的密码</string>
+    <string name="action_sign_in">登录</string>
+    <string name="fengefu">|</string>
+    <string name="action_register_in">注册</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
 
 </resources>

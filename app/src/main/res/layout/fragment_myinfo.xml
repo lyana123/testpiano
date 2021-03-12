@@ -3,16 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragement.shouye"
-    android:background="@color/chose">
+    android:background="@color/cardview_light_background"
+    tools:context=".fragement.MyinfoFragment">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="欢迎到广场！"
+        android:layout_height="27dp"
+        android:layout_marginTop="260dp"
         android:gravity="center"
-        android:textSize="30dp"
-        android:layout_centerHorizontal="true"
-        />
+        android:text="我的资料" />
 
 </FrameLayout>

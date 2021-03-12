@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_marginBottom="3dp"
-        android:background="@color/unchose"
+        android:background="@color/cardview_light_background"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout">
 
@@ -59,6 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="3dp"
                 android:layout_alignParentBottom="true"
                 android:gravity="center"
                 android:singleLine="true"
@@ -197,7 +198,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="3dp"
-                android:src="@drawable/geren2" />
+                android:src="@drawable/geren1" />
         </RelativeLayout>
 
 

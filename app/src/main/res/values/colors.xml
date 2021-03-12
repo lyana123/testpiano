@@ -5,6 +5,7 @@
     <color name="colorAccent">#615c99</color>
     <color name="highlight">#000000</color>
     <color name="chose">#cdcbe6</color>
-    <color name="unchose">#ffffff</color>
+    <color name="unchose">#ABAAB5</color>
     <color name="colorText">#50817fc8</color>
+
 </resources>
