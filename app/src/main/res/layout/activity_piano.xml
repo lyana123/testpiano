@@ -15,6 +15,33 @@
         android:orientation="horizontal"
         android:padding="5dp" >
 
+        <Button
+            android:id="@+id/quit"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/back" />
+
+        <Button
+            android:text="开始录音"
+            android:id="@+id/StartRecording"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:text="停止录音"
+            android:id="@+id/StopRecording"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!--        <Button-->
+        <!--            android:id="@+id/btn_control"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="开始录音" />-->
+
         <TextView
             android:id="@+id/text"
             android:layout_width="0dp"
@@ -23,15 +50,17 @@
             android:scrollbars="vertical"
             android:gravity="center"
             android:maxLines="3"
-            android:text="@string/title" />
+            android:text="@string/title"
+            android:textColor="@color/unchose"/>
 
         <Button
             android:id="@+id/setting"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/button_selector"
-            android:text="设置" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/setting" />
     </LinearLayout>
 
     <LinearLayout

@@ -1,13 +1,25 @@
 package com.example.mypiano.piano;
 
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.Dialog;
+import android.os.Environment;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -20,6 +32,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.example.mypiano.MainActivity;
 import com.example.mypiano.R;
 
 
@@ -27,6 +44,7 @@ public class piano extends Activity  {
 
     private Button button[];// 按钮数组
     private Button setting;// 设置按钮
+    private Button exit;//退出按钮
     private TextView textView;// 简谱
     private MyMusicUtils utils;// 工具类
     private View parent;// 父视图
@@ -41,18 +59,84 @@ public class piano extends Activity  {
     private Button quit;
     private Spinner spinner;
 
+//    private Button btn_control;
+//    private boolean isStart = false;
+//    private MediaRecorder mr = null;
+
+    Button startRecordingButton, stopRecordingButton;//开始录音、停止录音
+    File recordingFile;//储存AudioRecord录下来的文件
+    boolean isRecording = false; //true表示正在录音
+    AudioRecord audioRecord=null;
+    File parentfile=null; ;//文件目录
+    int bufferSize=0;//最小缓冲区大小
+    int sampleRateInHz = 11025;//采样率
+    int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO; //单声道
+    int audioFormat = AudioFormat.ENCODING_PCM_16BIT; //量化位数
+    String TAG="AudioRecord";
+
+    String[] permissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE};
+    List<String> mPermissionList = new ArrayList<>();
+    // private ImageView welcomeImg = null;
+    private static final int PERMISSION_REQUEST = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        checkPermission();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_piano);
         Intent intent = getIntent();
         // 新建工具类
         utils = new MyMusicUtils(getApplicationContext());
+        // 新建简谱
         textView = (TextView) findViewById(R.id.text);
         textView.setClickable(true);
         textView.setMovementMethod(ScrollingMovementMethod.getInstance());
         // 注意如果想要滚动条时刻显示, 必须加上以下语句:
         textView.setScrollbarFadingEnabled(false);
+
+//        btn_control = (Button) findViewById(R.id.btn_control);
+//        btn_control.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(!isStart){
+//                    startRecord();
+//                    btn_control.setText("停止录制");
+//                    isStart = true;
+//                }else{
+//                    stopRecord();
+//                    btn_control.setText("开始录制");
+//                    isStart = false;
+//                }
+//            }
+//        });
+
+        //新建开始录音按钮，结束录音按钮
+        startRecordingButton = (Button)findViewById(R.id.StartRecording);
+        stopRecordingButton = (Button)findViewById(R.id.StopRecording);
+
+        bufferSize = AudioRecord.getMinBufferSize(sampleRateInHz,channelConfig, audioFormat);//计算最小缓冲区
+        audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,sampleRateInHz,channelConfig, audioFormat, bufferSize);//创建AudioRecorder对象
+
+        parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/AudiioRecordTest");
+        if(!parentfile.exists())
+            parentfile.mkdirs();//创建文件夹
+
+        startRecordingButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                record();
+            }
+        });
+        stopRecordingButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                stopRecording();
+            }
+        });
 
         // 按钮资源Id
         buttonId = new int[21];
@@ -360,6 +444,17 @@ public class piano extends Activity  {
             }
         });
 
+        //退出按钮
+        exit = (Button) findViewById(R.id.quit);
+        exit.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                piano.this.finish();
+            }
+        });
+
         // 设置界面
         setting = (Button) findViewById(R.id.setting);
 
@@ -371,6 +466,99 @@ public class piano extends Activity  {
                 dialog.show();
             }
         });
+    }
+
+    //开始录制
+//    private void startRecord(){
+//        if(mr == null){
+//            File dir = new File(Environment.getExternalStorageDirectory(),"sounds");
+//            if(!dir.exists()){
+//                dir.mkdirs();
+//            }
+//            File soundFile = new File(dir,System.currentTimeMillis()+".amr");
+//            if(!soundFile.exists()){
+//                try {
+//                    soundFile.createNewFile();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//            mr = new MediaRecorder();
+//            mr.setAudioSource(MediaRecorder.AudioSource.MIC);  //音频输入源
+//            mr.setOutputFormat(MediaRecorder.OutputFormat.AMR_WB);   //设置输出格式
+//            mr.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);   //设置编码格式
+//            mr.setOutputFile(soundFile.getAbsolutePath());
+//            try {
+//                mr.prepare();
+//                mr.start();  //开始录制
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
+//    }
+
+    //停止录制，资源释放
+//    private void stopRecord(){
+//        if(mr != null){
+//            mr.stop();
+//            mr.release();
+//            mr = null;
+//        }
+//    }
+
+    //开始录音
+    public void record() {
+        isRecording = true;
+        Toast.makeText(getApplicationContext(),"开始录音",Toast.LENGTH_SHORT).show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                isRecording = true;
+
+                recordingFile = new File(parentfile,"audiotest.pcm");
+                if(recordingFile.exists()){
+                    recordingFile.delete();
+                }
+
+                try {
+                    recordingFile.createNewFile();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e(TAG,"创建储存音频文件出错");
+                }
+
+                try {
+                    DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(recordingFile)));
+                    byte[] buffer = new byte[bufferSize];
+                    audioRecord.startRecording();//开始录音
+                    int r = 0;
+                    while (isRecording) {
+                        int bufferReadResult = audioRecord.read(buffer,0,bufferSize);
+                        for (int i = 0; i < bufferReadResult; i++)
+                        {
+                            dos.write(buffer[i]);
+                        }
+                        r++;
+                    }
+                    audioRecord.stop();//停止录音
+                    dos.close();
+                } catch (Throwable t) {
+                    Log.e(TAG, "Recording Failed");
+                }
+
+            }
+        }).start();
+
+    }
+
+    //停止录音
+    public void stopRecording()
+    {
+        isRecording = false;
+        Toast.makeText(getApplicationContext(),"停止录音",Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -440,5 +628,43 @@ public class piano extends Activity  {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    // 检查权限
+    private void checkPermission() {
+        mPermissionList.clear();
+
+        //判断哪些权限未授予
+        for (int i = 0; i < permissions.length; i++) {
+            if (ContextCompat.checkSelfPermission(this, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
+                mPermissionList.add(permissions[i]);
+            }
+        }
+        /**
+         * 判断是否为空
+         */
+        if (mPermissionList.isEmpty()) {//未授予的权限为空，表示都授予了
+
+        } else {//请求权限方法
+            String[] permissions = mPermissionList.toArray(new String[mPermissionList.size()]);//将List转为数组
+            ActivityCompat.requestPermissions(piano.this, permissions, PERMISSION_REQUEST);
+        }
+    }
+
+    /**
+     * 响应授权
+     * 这里不管用户是否拒绝，都进入首页，不再重复申请权限
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST:
+
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                break;
+        }
     }
 }
