@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="@color/chose"
+    tools:context=".user.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_centerHorizontal="true"
+                android:text="@string/app_name"
+                android:textSize="28dp"
+                />
+
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="328dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="34dp"
+                android:layout_marginTop="120dp"
+                android:layout_marginEnd="34dp"
+                android:background="@drawable/edittext"
+                android:hint="@string/prompt_phone"
+                android:inputType="textEmailAddress"
+                android:selectAllOnFocus="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="328dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="34dp"
+                android:layout_marginTop="190dp"
+                android:layout_marginEnd="34dp"
+                android:background="@drawable/edittext"
+                android:hint="@string/prompt_password"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:selectAllOnFocus="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/username"
+                android:layout_marginBottom="20dp"/>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+            android:id="@+id/login"
+            android:layout_width="180dp"
+            android:layout_height="35dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="200dp"
+            android:layout_marginTop="30dp"
+            android:background="#FFFFFF"
+            android:enabled="true"
+            android:text="@string/action_sign_in"
+                android:layout_marginEnd="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginLeft="200dp"
+                android:layout_marginBottom="30dp"/>
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="120dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="245dp"
+                android:layout_marginRight="245dp"
+
+                android:text="保存密码"
+                app:layout_constraintVertical_bias="0.0" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/regist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="100dp"
+                android:layout_marginBottom="20dp"
+                android:enabled="true"
+                android:text="@string/action_register_in" />
+            <TextView
+                android:id="@+id/fuhao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="195dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="195dp"
+                android:layout_marginBottom="20dp"
+                android:enabled="true"
+                android:text="@string/fengefu" />
+            <TextView
+                android:id="@+id/forgetPwd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="240dp"
+                android:layout_marginLeft="240dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
+                android:text="忘记密码？"
+                 />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="30dp"
+    android:text="-------------------------------------------------------------------------------------"
+    android:gravity="center_horizontal">
+
+</TextView>
+
+            <TextView
+                android:id="@+id/disanfang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+
+                android:layout_marginTop="70dp"
+                android:layout_marginBottom="20dp"
+                android:text="第三方登录"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="110dp"
+                android:gravity="center_horizontal">
+
+
+                <ImageButton
+                    android:id="@+id/weixinLogin"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="60dp"
+
+                    android:background="@android:drawable/sym_def_app_icon" />
+
+                <ImageButton
+                    android:id="@+id/qqLogin"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+
+                    android:background="@android:drawable/sym_def_app_icon" />
+
+                <ImageButton
+                    android:id="@+id/weiboLogin"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                   android:layout_marginLeft="60dp"
+                    android:background="@android:drawable/sym_def_app_icon" />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

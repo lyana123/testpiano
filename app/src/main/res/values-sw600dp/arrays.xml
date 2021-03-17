@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="imgs">
+        <item>Ciara</item>
+        <item>before we begin</item>
+        <item>Talk</item>
+        <item>Taylor Swift</item>
+        <item>Paris In The Rain</item>
+    </string-array>
+    <string-array name="songs">
+        <item>够钟</item>
+        <item>How Do You Sleep？</item>
+        <item>Talk</item>
+        <item>水星记</item>
+        <item>Paris In The Rain</item>
+    </string-array>
+</resources>
