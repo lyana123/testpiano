@@ -203,7 +203,7 @@ public class piano extends Activity  {
                     if (temp != -1) {// 事件对应的是当前点
                         switch (event.getActionMasked()) {
                             case MotionEvent.ACTION_DOWN:
-                                 // 单独一根手指或最先按下的那个
+                                // 单独一根手指或最先按下的那个
                             case MotionEvent.ACTION_POINTER_DOWN:
                                 if (count != 0) {
                                     if (pressedkey[count - 1] == -1) {

@@ -29,7 +29,7 @@ public class resourceFragment extends Fragment {
 
     private TextView textViewForBeforeCut,textViewForAfterCut;
 
-    public  resourceFragment() {
+    public resourceFragment() {
         // Required empty public constructor
     }
 
