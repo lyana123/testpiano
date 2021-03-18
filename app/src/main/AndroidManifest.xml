@@ -21,6 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".user.LoginActivity"></activity>
+        <activity android:name=".fragement.SongList.SongListActivity" />
         <activity android:name=".piano.piano" />
         <activity android:name=".piano.ListActivity" />
         <activity android:name=".MainActivity" />

@@ -47,6 +47,48 @@ public class FileUtils {
     }
 
     /**
+     * 获取全部剪辑前mid文件列表
+     */
+    public static List<File> getbeforeMidFiles() {
+        List<File> list = new ArrayList<>();
+        String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/songbeforecut/";
+
+        File rootFile = new File(fileBasePath);
+        if (!rootFile.exists()) {
+        } else {
+
+            File[] files = rootFile.listFiles();
+            for (File file : files) {
+                list.add(file);
+            }
+
+        }
+        return list;
+
+    }
+
+    /**
+     * 获取全部剪辑后mid文件列表
+     */
+    public static List<File> getaftereMidFiles() {
+        List<File> list = new ArrayList<>();
+        String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/songaftercut/";
+
+        File rootFile = new File(fileBasePath);
+        if (!rootFile.exists()) {
+        } else {
+
+            File[] files = rootFile.listFiles();
+            for (File file : files) {
+                list.add(file);
+            }
+
+        }
+        return list;
+
+    }
+
+    /**
      * 将一个pcm文件转化为wav文件
      *
      * @param pcmPath         pcm文件路径
