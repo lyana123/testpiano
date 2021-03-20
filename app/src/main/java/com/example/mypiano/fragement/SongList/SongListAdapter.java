@@ -1,20 +1,27 @@
 package com.example.mypiano.fragement.SongList;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
 import com.example.mypiano.R;
+import com.example.mypiano.piano.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +36,12 @@ public class SongListAdapter extends BaseAdapter {
     int mediaPlayerstate = 1; //1--从未开始播放音乐，2--正在播放音乐，3--暂停音乐还没播完
     int mdediaPlayerposition = -1;
     int mselect = -1;
+
+    private Dialog dialog;
+    private View dialogView;
+    private Button cancel;
+    private Button rename;
+    private EditText editText;
 
     public SongListAdapter(Context context, List<File> list) {
         this.context = context;
@@ -74,15 +87,15 @@ public class SongListAdapter extends BaseAdapter {
             viewHolder.playbutton.setBackgroundResource(R.drawable.play);
         }
 
-        File parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/songbeforecut");
+        final File parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/songbeforecut");
         if(!parentfile.exists())
             parentfile.mkdirs();
         final String destinationPath=parentfile + "/" + list.get(position).getName();
 
         viewHolder.playbutton.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-            @Override
-            public void onClick(View v) {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onClick(View v) {
                 if(mediaPlayerstate == 1 && mdediaPlayerposition == -1){//从未播放音乐，要去播放音乐
                     mediaPlayer= new MediaPlayer();
                     try {
@@ -163,6 +176,56 @@ public class SongListAdapter extends BaseAdapter {
                     });
                 }
 
+            }
+        });
+
+        viewHolder.renamebutton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View v) {
+//                final EditText et = new EditText(context);
+//                new AlertDialog.Builder(context,AlertDialog.THEME_HOLO_LIGHT).setTitle("RENAME")
+////                        .setIcon(android.R.drawable.sym_def_app_icon)
+//                        .setView(et)
+//                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                //按下确定键后的事件
+//                                Toast.makeText(context.getApplicationContext(), et.getText().toString(),Toast.LENGTH_LONG).show();
+//                            }
+//                        }).setNegativeButton("取消",null).show();
+                dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_rename,
+                        null);
+                dialog = new Dialog(new ContextThemeWrapper(context,R.style.AlertDialogCustom));
+                dialog.setCancelable(false);
+                dialog.setContentView(dialogView);
+                dialog.setTitle("  RENAME");
+
+                cancel = (Button) dialogView.findViewById(R.id.btn_cancel);
+                rename = (Button) dialogView.findViewById(R.id.btn_rename);
+                editText = (EditText) dialogView.findViewById(R.id.et_passwd);
+                editText.setText(list.get(position).getName());
+
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                rename.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        File from = new File(parentfile,list.get(position).getName());
+                        File to = new File(parentfile,editText.getText().toString());
+                        from.renameTo(to);
+                        list= FileUtils.getbeforeMidFiles();
+                        notifyDataSetChanged();
+                    }
+                });
+
+                dialog.show();
             }
         });
 
