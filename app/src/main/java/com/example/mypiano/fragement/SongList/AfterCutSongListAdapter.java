@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class SongListAdapter extends BaseAdapter {
+public class AfterCutSongListAdapter extends BaseAdapter {
 
     Context context;
     List<File> list;
@@ -39,7 +39,7 @@ public class SongListAdapter extends BaseAdapter {
     private Button rename;
     private EditText editText;
 
-    public SongListAdapter(Context context, List<File> list) {
+    public AfterCutSongListAdapter(Context context, List<File> list) {
         this.context = context;
         this.list = list;
     }
@@ -61,18 +61,17 @@ public class SongListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final ViewHolder viewHolder;
+        final SongListAdapter.ViewHolder viewHolder;
         if (convertView == null) {
-            viewHolder = new ViewHolder();
-            convertView = LayoutInflater.from(context).inflate(R.layout.adapter_song_list_before_cut, null);
+            viewHolder = new SongListAdapter.ViewHolder();
+            convertView = LayoutInflater.from(context).inflate(R.layout.adapter_song_list_after_cut, null);
             convertView.setTag(viewHolder);
             viewHolder.name = (TextView) convertView.findViewById(R.id.adapter_file_list_name);
             viewHolder.size = (TextView) convertView.findViewById(R.id.adapter_file_list_create_size);
             viewHolder.playbutton = (Button) convertView.findViewById(R.id.playmedia);
-            viewHolder.cutbutton = (Button) convertView.findViewById(R.id.cut);
             viewHolder.renamebutton = (Button) convertView.findViewById(R.id.rename);
         } else {
-            viewHolder = (ViewHolder) convertView.getTag();
+            viewHolder = (SongListAdapter.ViewHolder) convertView.getTag();
         }
         viewHolder.name.setText(list.get(position).getName());
         viewHolder.size.setText(FormetFileSize(list.get(position).length()));
@@ -83,15 +82,15 @@ public class SongListAdapter extends BaseAdapter {
             viewHolder.playbutton.setBackgroundResource(R.drawable.play);
         }
 
-        final File parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/songbeforecut");
+        final File parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/songaftercut");
         if(!parentfile.exists())
             parentfile.mkdirs();
         final String destinationPath=parentfile + "/" + list.get(position).getName();
 
         viewHolder.playbutton.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                @Override
-                public void onClick(View v) {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View v) {
                 if(mediaPlayerstate == 1 && mdediaPlayerposition == -1){//从未播放音乐，要去播放音乐
                     mediaPlayer= new MediaPlayer();
                     try {
@@ -179,17 +178,6 @@ public class SongListAdapter extends BaseAdapter {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-//                final EditText et = new EditText(context);
-//                new AlertDialog.Builder(context,AlertDialog.THEME_HOLO_LIGHT).setTitle("RENAME")
-////                        .setIcon(android.R.drawable.sym_def_app_icon)
-//                        .setView(et)
-//                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int i) {
-//                                //按下确定键后的事件
-//                                Toast.makeText(context.getApplicationContext(), et.getText().toString(),Toast.LENGTH_LONG).show();
-//                            }
-//                        }).setNegativeButton("取消",null).show();
                 dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_rename,
                         null);
                 dialog = new Dialog(new ContextThemeWrapper(context,R.style.AlertDialogCustom));
@@ -216,7 +204,7 @@ public class SongListAdapter extends BaseAdapter {
                         File from = new File(parentfile,list.get(position).getName());
                         File to = new File(parentfile,editText.getText().toString());
                         from.renameTo(to);
-                        list= FileUtils.getbeforeMidFiles();
+                        list= FileUtils.getaftereMidFiles();
                         notifyDataSetChanged();
                     }
                 });
@@ -232,7 +220,6 @@ public class SongListAdapter extends BaseAdapter {
         TextView name;
         TextView size;
         Button playbutton;
-        Button cutbutton;
         Button renamebutton;
     }
 

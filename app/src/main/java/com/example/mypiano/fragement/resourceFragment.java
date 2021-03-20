@@ -86,7 +86,9 @@ public class resourceFragment extends Fragment {
         textViewForAfterCut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent showMidList = new Intent(getActivity().getApplicationContext(), SongListActivity.class);
+                showMidList.putExtra("type", "after");
+                startActivity(showMidList);
             }
         });
     }
