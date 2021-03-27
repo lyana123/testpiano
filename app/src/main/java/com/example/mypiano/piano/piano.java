@@ -5,12 +5,15 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioAttributes;
 import android.media.AudioFormat;
+import android.media.AudioPlaybackCaptureConfiguration;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -76,18 +79,27 @@ public class piano extends Activity  {
     int audioFormat = AudioFormat.ENCODING_PCM_16BIT; //量化位数
     String TAG="AudioRecord";
 
+    private MediaProjectionManager mediaProjectionManager;
+    private Intent it;
+    private AudioPlaybackCaptureConfiguration audioPlaybackCaptureConfiguration;
+
     String[] permissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAPTURE_AUDIO_OUTPUT};
     List<String> mPermissionList = new ArrayList<>();
     // private ImageView welcomeImg = null;
     private static final int PERMISSION_REQUEST = 1;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         checkPermission();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_piano);
         Intent intent = getIntent();
+
+//        mediaProjectionManager = getSystemService(MediaProjectionManager.class);
+//        it = mediaProjectionManager.createScreenCaptureIntent();
+//        startActivityForResult(it,1);
 
         // 新建工具类
         utils = new MyMusicUtils(getApplicationContext());
@@ -104,11 +116,26 @@ public class piano extends Activity  {
 
         //创建AudioRecorder对象 AudioSource.REMOTE_SUBMIX AudioSource.MIC DEFAULT
         audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,sampleRateInHz,channelConfig, audioFormat, bufferSize);
+//        if(audioPlaybackCaptureConfiguration != null){
+//            audioRecord = new AudioRecord.Builder()
+//                    .setAudioFormat(new AudioFormat.Builder()
+//                            .setEncoding(audioFormat)
+//                            .setSampleRate(sampleRateInHz)
+//                            .setChannelMask(channelConfig)
+//                            .build())
+//                    .setBufferSizeInBytes(bufferSize)
+//                    .setAudioPlaybackCaptureConfig(audioPlaybackCaptureConfiguration).build();
+//        }
+
 
         //创建文件夹
-        parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/test-piano-main");
+//        parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/test-piano-main");
+        parentfile = new File(getExternalFilesDir(null)+ "/test-piano-main");
         if(!parentfile.exists())
             parentfile.mkdirs();
+
+//        Log.d("parentfile:",Environment.getExternalStorageDirectory().getAbsolutePath()+ "/test-piano-main");
+//        Log.d("parentfile:",getExternalFilesDir(null)+ "/test-piano-main");
 
         //新建开始录音按钮，结束录音按钮
         startRecordingButton = (Button)findViewById(R.id.StartRecording);
@@ -482,8 +509,19 @@ public class piano extends Activity  {
     /**
      * 开始录音
      */
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void record() {
         isRecording = true;
+//        if(audioRecord == null){
+//            audioRecord = new AudioRecord.Builder()
+//                    .setAudioFormat(new AudioFormat.Builder()
+//                            .setEncoding(audioFormat)
+//                            .setSampleRate(sampleRateInHz)
+//                            .setChannelMask(channelConfig)
+//                            .build())
+//                    .setBufferSizeInBytes(bufferSize)
+//                    .setAudioPlaybackCaptureConfig(audioPlaybackCaptureConfiguration).build();
+//        }
         Toast.makeText(getApplicationContext(),"开始录音",Toast.LENGTH_SHORT).show();
         new Thread(new Runnable() {
             @Override
@@ -495,7 +533,7 @@ public class piano extends Activity  {
                 if(recordingFile.exists()){
                     recordingFile.delete();
                 }
-
+                Log.e(TAG, recordingFile.getPath());
                 try {
                     recordingFile.createNewFile();
                 }
@@ -635,4 +673,17 @@ public class piano extends Activity  {
                 break;
         }
     }
+
+//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
+//        Log.e("onActivityResult", "------------------------start------------------------");
+//        super.onActivityResult(requestCode, resultCode, intent);
+//        MediaProjection mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, intent);
+//        AudioPlaybackCaptureConfiguration.Builder builder = new AudioPlaybackCaptureConfiguration.Builder(mediaProjection);
+//        builder.addMatchingUsage(AudioAttributes.USAGE_MEDIA);//多媒体
+//        builder.addMatchingUsage(AudioAttributes.USAGE_ALARM);//闹铃
+//        builder.addMatchingUsage(AudioAttributes.USAGE_GAME);//游戏
+//        audioPlaybackCaptureConfiguration = builder.build();
+//        Log.e("onActivityResult", "------------------------end------------------------");
+//    }
 }

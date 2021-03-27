@@ -83,7 +83,8 @@ public class SongListAdapter extends BaseAdapter {
             viewHolder.playbutton.setBackgroundResource(R.drawable.play);
         }
 
-        final File parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/songbeforecut");
+//        final File parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/songbeforecut");
+        final File parentfile = new File(context.getExternalFilesDir(null)+ "/songbeforecut");
         if(!parentfile.exists())
             parentfile.mkdirs();
         final String destinationPath=parentfile + "/" + list.get(position).getName();

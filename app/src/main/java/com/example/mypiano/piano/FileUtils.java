@@ -3,6 +3,8 @@ package com.example.mypiano.piano;
 import android.os.Environment;
 import android.util.Log;
 
+import com.example.mypiano.MyApplication;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -30,7 +32,8 @@ public class FileUtils {
      */
     public static List<File> getPcmFiles() {
         List<File> list = new ArrayList<>();
-        String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + AUDIO_PCM_BASEPATH;
+//        String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + AUDIO_PCM_BASEPATH;
+        String fileBasePath = MyApplication.context.getExternalFilesDir(null) + AUDIO_PCM_BASEPATH;
 
         File rootFile = new File(fileBasePath);
         if (!rootFile.exists()) {
@@ -51,8 +54,8 @@ public class FileUtils {
      */
     public static List<File> getbeforeMidFiles() {
         List<File> list = new ArrayList<>();
-        String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/songbeforecut/";
-
+//        String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/songbeforecut/";
+        String fileBasePath = MyApplication.context.getExternalFilesDir(null) + "/songbeforecut/";
         File rootFile = new File(fileBasePath);
         if (!rootFile.exists()) {
         } else {
@@ -72,8 +75,8 @@ public class FileUtils {
      */
     public static List<File> getaftereMidFiles() {
         List<File> list = new ArrayList<>();
-        String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/songaftercut/";
-
+//        String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/songaftercut/";
+        String fileBasePath = MyApplication.context.getExternalFilesDir(null) + "/songaftercut/";
         File rootFile = new File(fileBasePath);
         if (!rootFile.exists()) {
         } else {

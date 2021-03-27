@@ -82,7 +82,8 @@ public class AfterCutSongListAdapter extends BaseAdapter {
             viewHolder.playbutton.setBackgroundResource(R.drawable.play);
         }
 
-        final File parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/songaftercut");
+//        final File parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/songaftercut");
+        final File parentfile = new File(context.getExternalFilesDir(null)+ "/songaftercut");
         if(!parentfile.exists())
             parentfile.mkdirs();
         final String destinationPath=parentfile + "/" + list.get(position).getName();

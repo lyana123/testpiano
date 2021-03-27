@@ -14,12 +14,12 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.mypiano.R;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
-
-import com.example.mypiano.R;
 
 public class FileListAdapter extends BaseAdapter {
     Context context;
@@ -73,9 +73,11 @@ public class FileListAdapter extends BaseAdapter {
             viewHolder.playbutton.setBackgroundResource(R.drawable.play);
         }
 
-        File parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/test-piano-main1");
+//        File parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/test-piano-main1");
+        File parentfile = new File(context.getExternalFilesDir(null)+ "/test-piano-main1");
         if(!parentfile.exists())
             parentfile.mkdirs();
+
         final String destinationPath=parentfile + "/" + list.get(position).getName().replace(".pcm",".wav");
 
         viewHolder.playbutton.setOnClickListener(new View.OnClickListener() {
