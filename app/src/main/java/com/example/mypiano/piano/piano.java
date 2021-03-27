@@ -97,9 +97,9 @@ public class piano extends Activity  {
         setContentView(R.layout.activity_piano);
         Intent intent = getIntent();
 
-//        mediaProjectionManager = getSystemService(MediaProjectionManager.class);
-//        it = mediaProjectionManager.createScreenCaptureIntent();
-//        startActivityForResult(it,1);
+        mediaProjectionManager = getSystemService(MediaProjectionManager.class);
+        it = mediaProjectionManager.createScreenCaptureIntent();
+        startActivityForResult(it,1);
 
         // 新建工具类
         utils = new MyMusicUtils(getApplicationContext());
@@ -115,17 +115,17 @@ public class piano extends Activity  {
         bufferSize = AudioRecord.getMinBufferSize(sampleRateInHz,channelConfig, audioFormat);
 
         //创建AudioRecorder对象 AudioSource.REMOTE_SUBMIX AudioSource.MIC DEFAULT
-        audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,sampleRateInHz,channelConfig, audioFormat, bufferSize);
-//        if(audioPlaybackCaptureConfiguration != null){
-//            audioRecord = new AudioRecord.Builder()
-//                    .setAudioFormat(new AudioFormat.Builder()
-//                            .setEncoding(audioFormat)
-//                            .setSampleRate(sampleRateInHz)
-//                            .setChannelMask(channelConfig)
-//                            .build())
-//                    .setBufferSizeInBytes(bufferSize)
-//                    .setAudioPlaybackCaptureConfig(audioPlaybackCaptureConfiguration).build();
-//        }
+//        audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,sampleRateInHz,channelConfig, audioFormat, bufferSize);
+        if(audioPlaybackCaptureConfiguration != null){
+            audioRecord = new AudioRecord.Builder()
+                    .setAudioFormat(new AudioFormat.Builder()
+                            .setEncoding(audioFormat)
+                            .setSampleRate(sampleRateInHz)
+                            .setChannelMask(channelConfig)
+                            .build())
+                    .setBufferSizeInBytes(bufferSize)
+                    .setAudioPlaybackCaptureConfig(audioPlaybackCaptureConfiguration).build();
+        }
 
 
         //创建文件夹
@@ -512,16 +512,16 @@ public class piano extends Activity  {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void record() {
         isRecording = true;
-//        if(audioRecord == null){
-//            audioRecord = new AudioRecord.Builder()
-//                    .setAudioFormat(new AudioFormat.Builder()
-//                            .setEncoding(audioFormat)
-//                            .setSampleRate(sampleRateInHz)
-//                            .setChannelMask(channelConfig)
-//                            .build())
-//                    .setBufferSizeInBytes(bufferSize)
-//                    .setAudioPlaybackCaptureConfig(audioPlaybackCaptureConfiguration).build();
-//        }
+        if(audioRecord == null){
+            audioRecord = new AudioRecord.Builder()
+                    .setAudioFormat(new AudioFormat.Builder()
+                            .setEncoding(audioFormat)
+                            .setSampleRate(sampleRateInHz)
+                            .setChannelMask(channelConfig)
+                            .build())
+                    .setBufferSizeInBytes(bufferSize)
+                    .setAudioPlaybackCaptureConfig(audioPlaybackCaptureConfiguration).build();
+        }
         Toast.makeText(getApplicationContext(),"开始录音",Toast.LENGTH_SHORT).show();
         new Thread(new Runnable() {
             @Override
@@ -674,16 +674,14 @@ public class piano extends Activity  {
         }
     }
 
-//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-//    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
-//        Log.e("onActivityResult", "------------------------start------------------------");
-//        super.onActivityResult(requestCode, resultCode, intent);
-//        MediaProjection mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, intent);
-//        AudioPlaybackCaptureConfiguration.Builder builder = new AudioPlaybackCaptureConfiguration.Builder(mediaProjection);
-//        builder.addMatchingUsage(AudioAttributes.USAGE_MEDIA);//多媒体
-//        builder.addMatchingUsage(AudioAttributes.USAGE_ALARM);//闹铃
-//        builder.addMatchingUsage(AudioAttributes.USAGE_GAME);//游戏
-//        audioPlaybackCaptureConfiguration = builder.build();
-//        Log.e("onActivityResult", "------------------------end------------------------");
-//    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
+        super.onActivityResult(requestCode, resultCode, intent);
+        MediaProjection mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, intent);
+        AudioPlaybackCaptureConfiguration.Builder builder = new AudioPlaybackCaptureConfiguration.Builder(mediaProjection);
+        builder.addMatchingUsage(AudioAttributes.USAGE_MEDIA);//多媒体
+        builder.addMatchingUsage(AudioAttributes.USAGE_ALARM);//闹铃
+        builder.addMatchingUsage(AudioAttributes.USAGE_GAME);//游戏
+        audioPlaybackCaptureConfiguration = builder.build();
+    }
 }
