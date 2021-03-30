@@ -4,24 +4,32 @@ import android.app.Dialog;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Build;
-import android.os.Environment;
+import android.os.Handler;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
 import com.example.mypiano.R;
+import com.example.mypiano.musiccut.MusicCutPopupWindow;
+import com.example.mypiano.musiccut.MusicUtil;
 import com.example.mypiano.piano.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class SongListAdapter extends BaseAdapter {
@@ -30,8 +38,11 @@ public class SongListAdapter extends BaseAdapter {
     List<File> list;
     MediaPlayer mediaPlayer;
     int mediaPlayerstate = 1; //1--从未开始播放音乐，2--正在播放音乐，3--暂停音乐还没播完
-    int mdediaPlayerposition = -1;
-    int mselect = -1;
+    int mdediaPlayerposition = -1; //mdediaPlayer播放哪个位置的歌
+    int mselect = -1; //哪个位置是暂停图标
+
+    MusicCutPopupWindow musicCutPopupWindow;
+    int CutPosition = -1; //点击哪个位置的剪辑按钮
 
     private Dialog dialog;
     private View dialogView;
@@ -226,8 +237,116 @@ public class SongListAdapter extends BaseAdapter {
             }
         });
 
+        viewHolder.cutbutton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View v) {
+                CutPosition = position;
+                musicCutPopupWindow = new MusicCutPopupWindow(context, itemsOnClick);
+                // 设置音乐信息
+                if(mediaPlayer != null){
+                    mediaPlayer.reset();
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                }
+                mediaPlayer = new MediaPlayer();
+                try {
+                    mediaPlayer.setDataSource(destinationPath);
+                    mediaPlayer.prepareAsync();
+                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            musicCutPopupWindow.setMusicInfo(list.get(position).getName(), mediaPlayer.getDuration() );
+                            // 显示窗口
+                            musicCutPopupWindow.showAtLocation(((SongListActivity) context)
+                                    .findViewById(R.id.SongListActivity_root), Gravity.BOTTOM, 0, 0);
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         return convertView;
     }
+
+    //为弹出窗口实现监听类
+    private OnClickListener  itemsOnClick = new OnClickListener(){
+
+        public void onClick(View v) {
+            switch (v.getId()){
+                //确定按钮
+                case R.id.popupWindow_music_cut_btn_sure:
+                    //获取最小值
+                    float min=musicCutPopupWindow.getMinRule();
+                    //获取最大值
+                    float max=musicCutPopupWindow.getMaxRule();
+                    //开始剪切音乐
+                    //要剪切的音乐路径
+                    String inputPath=list.get(CutPosition).getPath();
+                    //剪切后音乐文件路径
+                    File flie = new File(context.getExternalFilesDir(null)+ "/songaftercut");
+                    if(!flie.exists()){
+                        flie.mkdirs();
+                    }
+                    String outputPath=flie.getPath()+"/new"+"_"+list.get(CutPosition).getName();
+                    File audioPath=new File(outputPath);
+                    //文件存在就先删除
+                    if(audioPath.exists()){
+                        try {
+                            audioPath.delete();
+                            audioPath.createNewFile();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    boolean flag= MusicUtil.clipMp3(inputPath, outputPath, (int)min*1000, (int)max*1000);
+                    if(flag){
+                        Toast.makeText(context, "剪辑成功,保存路径："+outputPath, Toast.LENGTH_SHORT).show();
+                        musicCutPopupWindow.dismiss();
+                    }else{
+                        Toast.makeText(context, "剪辑失败", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                //取消按钮
+                case R.id.popupWindow_music_cut_btn_cancel:
+                    //关闭弹窗
+                    musicCutPopupWindow.dismiss();
+                    //重置音乐
+                    mediaPlayer.reset();
+                    break;
+                //试听按钮
+                case R.id.popupWindow_music_cut_tv_musicTest:
+                    cutMusicStartProgress=(long)((int)musicCutPopupWindow.getMinRule()*1000);
+                    cutMusicEndProgress=(long)((int)musicCutPopupWindow.getMaxRule()*1000);
+                    // 设置音乐信息
+                    if(mediaPlayer != null){
+                        mediaPlayer.reset();
+                        mediaPlayer.stop();
+                        mediaPlayer.release();
+                    }
+                    mediaPlayer = new MediaPlayer();
+                    try {
+                        mediaPlayer.setDataSource(list.get(CutPosition).getPath());
+                        mediaPlayer.prepareAsync();
+                        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer mp) {
+                                if(cutMusicStartProgress!=0){
+                                    mediaPlayer.seekTo((int) cutMusicStartProgress);
+                                }
+                                mediaPlayer.start();
+                                handler.post(run);
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        }
+    };
 
     static class ViewHolder {
         TextView name;
@@ -244,7 +363,33 @@ public class SongListAdapter extends BaseAdapter {
         }
     }
 
-    public String FormetFileSize(long fileS) {// 转换文件大小
+    // 剪辑歌曲开始进度
+    long cutMusicStartProgress;
+    // 剪辑歌曲结束进度
+    long cutMusicEndProgress = 0;
+    Handler handler = new Handler();
+    /**
+     * 当歌曲播放到结束位置时，使用Handler来停止播放
+     */
+    public Runnable run = new Runnable() {
+        public void run() {
+            if(cutMusicEndProgress!=0){
+                if(mediaPlayer.isPlaying()&&mediaPlayer.getCurrentPosition()>=cutMusicEndProgress){
+                    mediaPlayer.reset();
+                    handler.removeCallbacks(run);
+                }
+                handler.postDelayed(run, 1000);
+            }
+
+        }
+    };
+
+    /**
+     * 转换文件大小
+     * @param fileS
+     * @return
+     */
+    public String FormetFileSize(long fileS) {
         DecimalFormat df = new DecimalFormat("#.00");
         String fileSizeString = "";
         if (fileS < 1024) {
@@ -257,5 +402,20 @@ public class SongListAdapter extends BaseAdapter {
             fileSizeString = df.format((double) fileS / 1073741824) + "G";
         }
         return fileSizeString;
+    }
+
+    /**
+     * 转换歌曲时间的格式
+     * @param time
+     * @return
+     */
+    public static String formatTime(long time) {
+        if (time / 1000 % 60 < 10) {
+            String t = time / 1000 / 60 + ":0" + time / 1000 % 60;
+            return t;
+        } else {
+            String t = time / 1000 / 60 + ":" + time / 1000 % 60;
+            return t;
+        }
     }
 }
