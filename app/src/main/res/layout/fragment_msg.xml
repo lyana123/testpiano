@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="47dp"
         android:layout_marginTop="260dp"
-        android:text="youxiangxinxi" />
+        android:gravity="center"
+        android:text="信息" />
 
 </FrameLayout>

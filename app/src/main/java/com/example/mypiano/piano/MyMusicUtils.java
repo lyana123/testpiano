@@ -20,13 +20,14 @@ public class MyMusicUtils {
             R.raw.c28,R.raw.d30,R.raw.e32,R.raw.f33,R.raw.g35,R.raw.a37,R.raw.b39,};
     SoundPool soundPool;
     HashMap<Integer, Integer> soundPoolMap;
+    String MusicSeries[] = {"C5","D5","E5","F5","G5","A6","B6",
+            "C4","D4","E4","F4","G4","A4","B5",
+            "C2","D3","E3","F3","G3","A3","B3",};
 
     /**
      *
      * @param context
      *            用于soundpool.load
-     * @param no
-     *            播放声音的编号
      */
     public MyMusicUtils(Context context) {
         soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 100);
@@ -36,12 +37,21 @@ public class MyMusicUtils {
         }
     }
 
+    /**
+     *
+     * @param no
+     *              播放声音的编号
+     */
     public int soundPlay(int no) {
         return soundPool.play(soundPoolMap.get(no), 100, 100, 1, 0, 1.0f);
     }
 
     public int soundOver() {
         return soundPool.play(soundPoolMap.get(1), 100, 100, 1, 0, 1.0f);
+    }
+
+    public String getmusicSeries(int no) {
+        return MusicSeries[no];
     }
 
     @Override

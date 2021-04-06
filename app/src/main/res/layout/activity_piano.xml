@@ -3,7 +3,7 @@
     android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/colorPrimary"
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
@@ -17,24 +17,24 @@
 
         <Button
             android:id="@+id/quit"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_marginTop="0dp"
             android:background="@drawable/back" />
 
         <Button
-            android:text="开始录音"
+            android:background="@drawable/startrecord"
             android:id="@+id/StartRecording"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="38dp"
+            android:layout_height="38dp"/>
 
         <Button
-            android:text="停止录音"
+            android:background="@drawable/stoprecord"
             android:id="@+id/StopRecording"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="38dp"
+            android:layout_height="38dp"/>
 
         <!--        <Button-->
         <!--            android:id="@+id/btn_control"-->
@@ -51,16 +51,16 @@
             android:gravity="center"
             android:maxLines="3"
             android:text="@string/title"
-            android:textColor="@color/unchose"/>
+            android:textColor="@android:color/white"/>
 
         <Button
             android:id="@+id/setting"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_marginTop="0dp"
-            android:background="@drawable/setting" />
+            android:background="@drawable/songlist" />
     </LinearLayout>
 
     <LinearLayout

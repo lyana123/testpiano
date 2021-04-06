@@ -1,22 +1,19 @@
 package com.example.mypiano.piano;
 
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.media.MediaPlayer;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.mypiano.MyApplication;
+import com.example.mypiano.R;
+
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.example.mypiano.R;
 
 public class ListActivity extends Activity {
     ListView listView;
@@ -35,11 +32,22 @@ public class ListActivity extends Activity {
 
         adapter = new FileListAdapter(this, list);
         listView.setAdapter(adapter);
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            //点击播放pcm音频
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-//
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            //点击播放pcm音频
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                File parentfile = new File(MyApplication.context.getExternalFilesDir(null)+ "/test-piano-main1");
+                if(!parentfile.exists())
+                    parentfile.mkdirs();
+
+                String destinationPath=parentfile + "/" + list.get(position).getName().replace(".pcm",".wav");
+                if (FileUtils.makePCMFileToWAVFile(list.get(position).getPath(), destinationPath, false)){
+                    Intent showPlaySong = new Intent(ListActivity.this, PlaySongActivity.class);
+                    showPlaySong.putExtra("path", destinationPath);
+                    showPlaySong.putExtra("name", list.get(position).getName().replace(".pcm",".wav"));
+                    startActivity(showPlaySong);
+                }
+
 //                File parentfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/test-piano-main1");
 //                if(!parentfile.exists())
 //                    parentfile.mkdirs();
@@ -69,9 +77,9 @@ public class ListActivity extends Activity {
 //                    Log.e("AudioRecorder", "makePCMFileToWAVFile fail");
 //                    throw new IllegalStateException("makePCMFileToWAVFile fail");
 //                }
-//
-//            }
-//        });
+
+            }
+        });
     }
 
     @Override

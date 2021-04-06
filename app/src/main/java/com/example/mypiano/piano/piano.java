@@ -40,6 +40,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,9 +71,12 @@ public class piano extends Activity  {
 
     Button startRecordingButton, stopRecordingButton;//开始录音、停止录音
     File recordingFile;//储存AudioRecord录下来的文件
+    File recordingFileforsong;//储存音乐序列文件
+    String songstrcontent;
     boolean isRecording = false; //true表示正在录音
     AudioRecord audioRecord=null;
-    File parentfile=null; ;//文件目录
+    File parentfile=null; ;//录音文件目录
+    File parentfileforsong=null; ;//序列文件目录
     int bufferSize=0;//最小缓冲区大小
     int sampleRateInHz = 16000;//采样率
     int channelConfig = AudioFormat.CHANNEL_IN_MONO; //单声道
@@ -133,6 +137,10 @@ public class piano extends Activity  {
         parentfile = new File(getExternalFilesDir(null)+ "/test-piano-main");
         if(!parentfile.exists())
             parentfile.mkdirs();
+
+        parentfileforsong = new File(getExternalFilesDir(null)+ "/song-series");
+        if(!parentfileforsong.exists())
+            parentfileforsong.mkdirs();
 
 //        Log.d("parentfile:",Environment.getExternalStorageDirectory().getAbsolutePath()+ "/test-piano-main");
 //        Log.d("parentfile:",getExternalFilesDir(null)+ "/test-piano-main");
@@ -247,6 +255,9 @@ public class piano extends Activity  {
                                             .setBackgroundResource(R.drawable.button_pressed);
                                     // 播放音阶
                                     utils.soundPlay(temp);
+                                    if(isRecording){
+                                        songstrcontent = songstrcontent + utils.getmusicSeries(temp) + " ";
+                                    }
                                     havePlayed[temp] = true;
                                 }
                                 break;
@@ -281,6 +292,9 @@ public class piano extends Activity  {
                                                         .setBackgroundResource(R.drawable.button_pressed);
                                                 // 发音
                                                 utils.soundPlay(i);
+                                                if(isRecording){
+                                                    songstrcontent = songstrcontent + utils.getmusicSeries(i) + " ";
+                                                }
                                                 havePlayed[i] = true;
                                             }
 
@@ -527,6 +541,7 @@ public class piano extends Activity  {
             @Override
             public void run() {
                 isRecording = true;
+                songstrcontent="";
 
                 String fileName = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
                 recordingFile = new File(parentfile,fileName+".pcm");
@@ -534,8 +549,16 @@ public class piano extends Activity  {
                     recordingFile.delete();
                 }
                 Log.e(TAG, recordingFile.getPath());
+
+                recordingFileforsong = new File(parentfileforsong,fileName+".txt");
+                if(recordingFileforsong.exists()){
+                    recordingFileforsong.delete();
+                }
+                Log.e(TAG, recordingFileforsong.getPath());
+
                 try {
                     recordingFile.createNewFile();
+                    recordingFileforsong.createNewFile();
                 }
                 catch (IOException e) {
                     e.printStackTrace();
@@ -571,6 +594,16 @@ public class piano extends Activity  {
     public void stopRecording()
     {
         isRecording = false;
+        songstrcontent=songstrcontent.substring(0,songstrcontent.length() - 1);
+        try{
+            RandomAccessFile raf = new RandomAccessFile(recordingFileforsong, "rwd");
+            raf.seek(recordingFileforsong.length());
+            raf.write(songstrcontent.getBytes());
+            raf.close();
+        }catch (Exception e) {
+            Log.e("TestFile", "Error on write File:" + e);
+        }
+
         Toast.makeText(getApplicationContext(),"停止录音",Toast.LENGTH_SHORT).show();
     }
 

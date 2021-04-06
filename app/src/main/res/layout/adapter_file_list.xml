@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:descendantFocusability="blocksDescendants">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -40,8 +41,8 @@
 
                 <Button
                     android:id="@+id/playmedia"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
                     android:background="@drawable/play"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"

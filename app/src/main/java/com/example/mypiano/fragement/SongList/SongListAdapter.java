@@ -301,7 +301,7 @@ public class SongListAdapter extends BaseAdapter {
                             e.printStackTrace();
                         }
                     }
-                    boolean flag= MusicUtil.clipMp3(inputPath, outputPath, (int)min*1000, (int)max*1000);
+                    boolean flag= MusicUtil.cutWav(inputPath, outputPath, (int)min*1000, (int)max*1000);
                     if(flag){
                         Toast.makeText(context, "剪辑成功,保存路径："+outputPath, Toast.LENGTH_SHORT).show();
                         musicCutPopupWindow.dismiss();
